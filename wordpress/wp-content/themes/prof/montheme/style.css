@@ -16,13 +16,16 @@ body {
     margin: 0;
 }
 
-header a {
+header a, footer a {
     color: white;
     text-decoration: none;
 }
 
-header li {
+header li, footer li {
     list-style: none;
+}
+
+header li {
     float: left;
 }
 
@@ -53,10 +56,6 @@ header {
     float: right;
 }
 
-.navbarMenu a {
-    padding: 20px;
-}
-
 .container {
     width: 70%;
     margin: 0 auto;
@@ -65,3 +64,18 @@ header {
 .title{
     font-size: 2em;
 } 
+
+.description h1 {
+    font-family: 'Open Sans', sans-serif;
+    font-size: -webkit-xxx-large;
+    color: white;
+}
+
+footer {
+    height: 180px;
+    background-color: #23282d;
+}
+
+footer ul {
+    padding: 0;
+}
