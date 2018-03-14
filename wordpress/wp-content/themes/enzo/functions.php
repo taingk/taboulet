@@ -117,7 +117,7 @@ function wpm_custom_post_type() {
 		'description'         => __( 'Toutes nos meilleures recettes'),
 		'labels'              => $labels,
 		// On définit les options disponibles dans l'éditeur de notre custom post type ( un titre, un auteur...)
-		'supports'            => array( 'title', 'editor', 'excerpt', 'author', 'thumbnail', 'comments', 'revisions', 'custom-fields', ),
+		'supports'            => array( 'title', 'editor', 'thumbnail', ),
 		/*
 		* Différentes options supplémentaires
 		*/
@@ -135,6 +135,22 @@ function wpm_custom_post_type() {
 
 add_action( 'init', 'wpm_custom_post_type', 0 );
 
+add_action('add_meta_boxes','init_metabox');
+function init_metabox(){
+  add_meta_box('id_ma_meta', 'Les ingredients', 'ma_meta_function', 'recette', 'normal');
+}
 
+function ma_meta_function($post){
+  $ingredient = get_post_meta($post->ID,'_ingredient_crea',true);
+  echo '<label for="ingredient_meta">Ingredient : </label>';
+  echo '<input id="ingredient_meta" type="text" name="ingredient" value="'.$ingredient.'" />';
+}
+
+add_action('save_post','save_metabox');
+
+function save_metabox($post_id){
+if(isset($_POST['ingredient']))
+  update_post_meta($post_id, '_ingredient_crea', esc_url($_POST['ingredient']));
+}
 
 ?>
