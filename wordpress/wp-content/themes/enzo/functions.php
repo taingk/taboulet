@@ -138,19 +138,24 @@ add_action( 'init', 'wpm_custom_post_type', 0 );
 add_action('add_meta_boxes','init_metabox');
 function init_metabox(){
   add_meta_box('id_ma_meta', 'Les ingredients', 'ma_meta_function', 'recette', 'normal');
+  add_meta_box('id_ma_meta2', 'Les ingredients', 'ma_meta_function', 'recette', 'normal');
 }
 
 function ma_meta_function($post){
   $ingredient = get_post_meta($post->ID,'_ingredient_crea',true);
+	$quantite = get_post_meta($post->ID,'_quantite_crea',true);
   echo '<label for="ingredient_meta">Ingredient : </label>';
   echo '<input id="ingredient_meta" type="text" name="ingredient" value="'.$ingredient.'" />';
+	echo '<label for="quantite_meta">Quantité : </label>';
+	echo '<input id="quantite_meta" type="text" name="quantite" value="'.$quantite.'" />';
 }
 
 add_action('save_post','save_metabox');
 
 function save_metabox($post_id){
 if(isset($_POST['ingredient']))
-  update_post_meta($post_id, '_ingredient_crea', esc_url($_POST['ingredient']));
+  update_post_meta($post_id, '_ingredient_crea', esc_html($_POST['ingredient']));
+	update_post_meta($post_id, '_quantite_crea', esc_html($_POST['quantite']));
 }
 
 ?>
