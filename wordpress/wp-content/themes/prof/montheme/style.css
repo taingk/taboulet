@@ -8,4 +8,60 @@ Version: 0.1
 */
 
 
+* {
+    box-sizing: border-box;
+}
 
+body {
+    margin: 0;
+}
+
+header a {
+    color: white;
+    text-decoration: none;
+}
+
+header li {
+    list-style: none;
+    float: left;
+}
+
+header ul {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}
+
+nav {
+    background-color: transparent;
+}
+
+header {
+    background-image: url('https://supervalu.ie/thumbnail/720x400/var/files/good-food-karma/recipe/tasty-toastie-recipe.jpg?fill=1');
+    background-position: center;
+    background-size: cover;
+    height: 500px;
+    font-family: 'Pacifico', cursive;
+    font-size: x-large;
+}
+
+.navbarBrand, .navbarMenu {
+    display: inline-block;
+}
+
+.navbarMenu {
+    float: right;
+}
+
+.navbarMenu a {
+    padding: 20px;
+}
+
+.container {
+    width: 70%;
+    margin: 0 auto;
+}
+
+.title{
+    font-size: 2em;
+} 

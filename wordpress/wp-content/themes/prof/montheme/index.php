@@ -14,7 +14,7 @@ echo do_shortcode( '[hello]' );
 	}
 
 //Affichage de la zone de widgets
-dynamic_sidebar();
+// dynamic_sidebar();
 
 //Include footer.php
 get_footer();
