@@ -23,6 +23,6 @@ body {
 
 body::before {
 	width: -webkit-calc(50% - 289px);
-	width: 28%;
+	width: 26%;
 
 }

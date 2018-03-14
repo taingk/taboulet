@@ -1,21 +1,23 @@
 <?php
 
-add_action( 'wp_enqueue_scripts', 'theme_enqueue_styles' );
+add_action('wp_enqueue_scripts', 'theme_enqueue_styles');
+add_action('init', 'wpm_custom_post_type', 0);
+add_action('add_meta_boxes','init_metabox');
+add_action('save_post','save_metabox');
+add_action('pre_get_posts', 'add_my_post_types_to_query');
+add_action('add_meta_boxes', 'add_custom_meta_boxes');
+add_action('save_post', 'save_custom_meta_data');
 
 function theme_enqueue_styles() {
     wp_enqueue_style( 'parent-style', get_template_directory_uri() . '/style.css' );
 }
-
-/*
-* On utilise une fonction pour créer notre custom post type 'Séries TV'
-*/
 
 function wpm_custom_post_type() {
 
 	// On rentre les différentes dénominations de notre custom post type qui seront affichées dans l'administration
 	$labels = array(
 		// Le nom au pluriel
-		'name'                => _x( 'Recette', 'Post Type General Name'),
+		'name'                => _x( 'Recettes', 'Post Type General Name'),
 		// Le nom au singulier
 		'singular_name'       => _x( 'Recette', 'Post Type Singular Name'),
 		// Le libellé affiché dans le menu
@@ -47,35 +49,47 @@ function wpm_custom_post_type() {
 		'public'              => true,
 		'has_archive'         => true,
 		'rewrite'			  => array( 'slug' => 'recette'),
-
+		'taxonomies'  		  => array( 'category' ),
 	);
 
-	// On enregistre notre custom post type qu'on nomme ici "serietv" et ses arguments
 	register_post_type( 'recette', $args );
-
 }
 
-add_action( 'init', 'wpm_custom_post_type', 0 );
-
-add_action('add_meta_boxes','init_metabox');
-function init_metabox(){
-  add_meta_box('id_ma_meta', 'Les ingredients', 'ma_meta_function', 'recette', 'normal');
-  add_meta_box('id_ma_meta2', 'Les ingredients', 'ma_meta_function', 'recette', 'normal');
+function init_metabox() {
+	add_meta_box('id_ma_meta', 'Les ingredients', 'ma_meta_function', 'recette', 'normal');
 }
 
-function ma_meta_function($post){
-  $ingredient = get_post_meta($post->ID,'_ingredient_crea',true);
+function ma_meta_function($post) {
+  	$ingredient = get_post_meta($post->ID,'_ingredient_crea',true);
 	$quantite = get_post_meta($post->ID,'_quantite_crea',true);
-  echo '<label for="ingredient_meta">Ingredient : </label>';
-  echo '<input id="ingredient_meta" type="text" name="ingredient" value="'.$ingredient.'" />';
-	echo '<label for="quantite_meta">Quantité : </label>';
-	echo '<input id="quantite_meta" type="text" name="quantite" value="'.$quantite.'" />';
+  	echo '<label for="ingredient_meta">Ingredient : </label>';
+	echo '<input id="ingredient_meta" type="text" name="ingredient" value="'.$ingredient.'" />';
+	echo '<br>';
+  	echo '<label for="quantite_meta">Quantité : </label>';
+  	echo '<input id="quantite_meta" type="text" name="quantite" value="'.$quantite.'" />';
 }
 
-add_action('save_post','save_metabox');
+function save_metabox($post_id) {
+	if (isset($_POST['ingredient'])) {
+		update_post_meta($post_id, '_ingredient_crea', esc_html($_POST['ingredient']));
+		update_post_meta($post_id, '_quantite_crea', esc_html($_POST['quantite']));
+	}
+}
 
-function save_metabox($post_id){
-if(isset($_POST['ingredient']))
-  update_post_meta($post_id, '_ingredient_crea', esc_html($_POST['ingredient']));
-	update_post_meta($post_id, '_quantite_crea', esc_html($_POST['quantite']));
+// Show posts of 'post', 'page' and 'movie' post types on home page
+function add_my_post_types_to_query( $query ) {
+	if ( is_home() && $query->is_main_query() )
+	  $query->set( 'post_type', array( 'recette' ) );
+	return $query;
+}
+
+function add_custom_meta_boxes() {
+    // Define the custom attachment for posts
+    add_meta_box(
+        'wp_custom_attachment',
+        'Custom Attachment',
+        'wp_custom_attachment',
+        'post',
+        'side'
+    );
 }
