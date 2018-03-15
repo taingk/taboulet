@@ -28,7 +28,7 @@ get_header(); ?>
 				comments_template();
 			endif;
 
-		// End the loop.
+			// End the loop.
 		endwhile;
 		?>
 

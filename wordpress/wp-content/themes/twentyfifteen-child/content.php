@@ -10,7 +10,6 @@
  */
 ?>
 
-
 	<?php
 	
 	$url = wp_get_attachment_url( get_post_thumbnail_id($post->ID) );
@@ -20,24 +19,28 @@
 	if (is_home()) : ?>
 		<article id="post-<?php the_ID(); ?>" <?php post_class(); ?> style="max-width: calc(4/12*100%); flex: 0 0 calc(4/12*100%); height: 350px; margin: 0 7%; <?php if (strlen($url) !== 0) echo $backgroundClass ?>">
 	<?php else : ?>
-		<article id="post-<?php the_ID(); ?>" <?php post_class(); ?> style="flex: 1">
+		<article id="post-<?php the_ID(); ?>" <?php post_class(); ?> style="flex: 1; max-width: calc(10/12*100%); flex: 0 0 calc(10/12*100%);">
 		<?php if (has_post_thumbnail()) : ?>
 			<header class="entry-header row align-center">
 		<?php else : ?>
 			<header class="entry-header row align-center padding-top">
-		<?php endif; ?>
-	<?php endif; ?>
-	
-	<?php
-		if ( is_single() ) :
-			echo '<div class="col-xxs-4">';
+		<?php endif;
+	endif;
+
+	if ( is_single() ) :
+		echo '<div class="col-xxs-4">';
 			twentyfifteen_post_thumbnail();
-			echo '</div>';
-			
-			the_title( '<h1 class="entry-title text-left col-xxs-8 ">', '</h1>' );
-		else :
-			the_title( sprintf( '<h2 class="entry-title text-center col-xxs-12"><a href="%s" rel="bookmark" style="' . $color . '">', esc_url( get_permalink() ) ), '</a></h2>' );
+		echo '</div>';
+
+		if (has_post_thumbnail()) :
+			the_title( '<h1 class="entry-title text-left col-xxs-8">', '</h1>' );
+		else:
+			the_title( '<h1 class="entry-title text-center col-xxs-12">', '</h1>' );
 		endif;
+	else :
+		the_title( sprintf( '<h2 class="entry-title text-center col-xxs-12"><a href="%s" rel="bookmark" style="' . $color . '">', esc_url( get_permalink() ) ), '</a></h2>' );
+	endif;
+	
 	?>
 	</header><!-- .entry-header -->
 
@@ -73,36 +76,36 @@
 					echo '</aside>';
 	
 				endif;
-	
-				echo '<article class="col-xxs-12 col-lg-8">';
-				echo '<p><strong>Temps total de préparation	 : ' . get_post_meta( get_the_ID(), '_temps_total_crea', true ) . '</strong></p>';
-				echo '<p><strong>Préparation :</strong></p>';
 
-				/* translators: %s: Name of current post */
-				the_content( sprintf(
-					__( 'Continue reading %s', 'twentyfifteen' ),
-					the_title( '<span class="screen-reader-text">', '</span>', false )
-				) );
-	
-				wp_link_pages( array(
-					'before'      => '<div class="page-links"><span class="page-links-title">' . __( 'Pages:', 'twentyfifteen' ) . '</span>',
-					'after'       => '</div>',
-					'link_before' => '<span>',
-					'link_after'  => '</span>',
-					'pagelink'    => '<span class="screen-reader-text">' . __( 'Page', 'twentyfifteen' ) . ' </span>%',
-					'separator'   => '<span class="screen-reader-text">, </span>',
-				) );
-	
-				echo '</article>';	
+			echo '<article class="col-xxs-12 col-lg-8">';
+			echo '<p><strong>Temps total de préparation	 : ' . get_post_meta( get_the_ID(), '_temps_total_crea', true ) . '</strong></p>';
+			echo '<p><strong>Préparation :</strong></p>';
 
-				else: 
+			/* translators: %s: Name of current post */
+			the_content( sprintf(
+				__( 'Continue reading %s', 'twentyfifteen' ),
+				the_title( '<span class="screen-reader-text">', '</span>', false )
+			) );
 
-					echo sprintf('<i class="margin-auto desc" style="' . $color . '">%s</i>',
-					get_post_meta( get_the_ID(), '_description_crea', true ));
+			wp_link_pages( array(
+				'before'      => '<div class="page-links"><span class="page-links-title">' . __( 'Pages:', 'twentyfifteen' ) . '</span>',
+				'after'       => '</div>',
+				'link_before' => '<span>',
+				'link_after'  => '</span>',
+				'pagelink'    => '<span class="screen-reader-text">' . __( 'Page', 'twentyfifteen' ) . ' </span>%',
+				'separator'   => '<span class="screen-reader-text">, </span>',
+			) );
 
-				endif;
+			echo '</article>';	
 
-				?>
+			else: 
+
+				echo sprintf('<i class="margin-auto desc" style="' . $color . '">%s</i>',
+				get_post_meta( get_the_ID(), '_description_crea', true ));
+
+			endif;
+
+		?>
 
 	</div><!-- .entry-content -->
 
