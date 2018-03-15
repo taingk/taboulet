@@ -1,15 +1,13 @@
 <?php
 
 add_action('wp_enqueue_scripts', 'theme_enqueue_styles');
-add_action('init', 'wpm_custom_post_type', 0);
+add_action('init', 'wpm_custom_post_type');
 add_action('add_meta_boxes','init_metabox');
 add_action('save_post','save_metabox');
 add_action('pre_get_posts', 'add_my_post_types_to_query');
-add_action('add_meta_boxes', 'add_custom_meta_boxes');
-add_action('save_post', 'save_custom_meta_data');
 
 function theme_enqueue_styles() {
-    wp_enqueue_style( 'parent-style', get_template_directory_uri() . '/style.css' );
+	wp_enqueue_style( 'parent-style', get_template_directory_uri() . '/style.css' );
 }
 
 function wpm_custom_post_type() {
@@ -41,7 +39,7 @@ function wpm_custom_post_type() {
 		'description'         => __( 'Toutes nos meilleures recettes'),
 		'labels'              => $labels,
 		// On définit les options disponibles dans l'éditeur de notre custom post type ( un titre, un auteur...)
-		'supports'            => array( 'title', 'editor', 'thumbnail', ),
+		'supports'            => array( 'title', 'editor', 'thumbnail' ),
 		/*
 		* Différentes options supplémentaires
 		*/
@@ -56,40 +54,48 @@ function wpm_custom_post_type() {
 }
 
 function init_metabox() {
-	add_meta_box('id_ma_meta', 'Les ingredients', 'ma_meta_function', 'recette', 'normal');
+	add_meta_box('id_description', 'Description de la recette (ce texte s\'affichera dans les aperçus de recette)', 'meta_description_function', 'recette', 'normal');
+	add_meta_box('id_ingredients', 'Liste d\'ingrédients (à séparer par des virgules, à inscrire dans le même ordre que la liste de quantités)', 'meta_ingredients_function', 'recette', 'normal');
+	add_meta_box('id_quantites', 'Liste de quantités (à séparer par des virgules, à inscrire dans le même ordre que la liste d\'ingrédients)', 'meta_quantites_function', 'recette', 'normal');
+	add_meta_box('id_temps_total', 'Temps total de préparation', 'meta_temps_total_function', 'recette', 'normal');
 }
 
-function ma_meta_function($post) {
-  	$ingredient = get_post_meta($post->ID,'_ingredient_crea',true);
+function meta_ingredients_function($post) {
+	$ingredient = get_post_meta($post->ID,'_ingredient_crea',true);
+
+	echo '<textarea id="ingredient_meta" name="ingredient" style="width: 100%; resize: none;">'.$ingredient.'</textarea>';
+}
+
+function meta_quantites_function($post) {
 	$quantite = get_post_meta($post->ID,'_quantite_crea',true);
-  	echo '<label for="ingredient_meta">Ingredient : </label>';
-	echo '<input id="ingredient_meta" type="text" name="ingredient" value="'.$ingredient.'" />';
-	echo '<br>';
-  	echo '<label for="quantite_meta">Quantité : </label>';
-  	echo '<input id="quantite_meta" type="text" name="quantite" value="'.$quantite.'" />';
+
+	echo '<textarea id="quantite_meta" name="quantite" style="width: 100%; resize: none;">'.$quantite.'</textarea>';
+}
+
+function meta_description_function($post) {
+	$description = get_post_meta($post->ID,'_description_crea',true);
+
+	echo '<textarea id="description_meta" name="description" style="width: 100%; resize: none;">'.$description.'</textarea>';
+}
+
+function meta_temps_total_function($post) {
+	$temps_total = get_post_meta($post->ID,'_temps_total_crea',true);
+
+	echo '<textarea id="temps_total_meta" name="temps_total" style="width: 100%; resize: none;">'.$temps_total.'</textarea>';
 }
 
 function save_metabox($post_id) {
-	if (isset($_POST['ingredient'])) {
+	if (isset($_POST['ingredient']) && isset($_POST['quantite']) && isset($_POST['description'])) {
 		update_post_meta($post_id, '_ingredient_crea', esc_html($_POST['ingredient']));
 		update_post_meta($post_id, '_quantite_crea', esc_html($_POST['quantite']));
+		update_post_meta($post_id, '_description_crea', esc_html($_POST['description']));
+		update_post_meta($post_id, '_temps_total_crea', esc_html($_POST['temps_total']));
 	}
 }
 
 // Show posts of 'post', 'page' and 'movie' post types on home page
 function add_my_post_types_to_query( $query ) {
 	if ( is_home() && $query->is_main_query() )
-	  $query->set( 'post_type', array( 'recette' ) );
+	  	$query->set( 'post_type', 'recette' );
 	return $query;
-}
-
-function add_custom_meta_boxes() {
-    // Define the custom attachment for posts
-    add_meta_box(
-        'wp_custom_attachment',
-        'Custom Attachment',
-        'wp_custom_attachment',
-        'post',
-        'side'
-    );
 }
